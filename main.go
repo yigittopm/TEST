@@ -1,9 +1,10 @@
 package main
 
-import "github.com/yigittopm/test/api"
+import (
+	"github.com/yigittopm/test/api"
+)
 
 func main() {
-	a := api.Server{}
-	server := a.NewServer(":8080")
-	server.Start()
+	a := api.SetupServer()
+	a.Run(":8080")
 }
