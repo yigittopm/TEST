@@ -24,6 +24,10 @@ Pull this repo and run ```main.go``` file`
   GET /hello
 ```
 
+```bash
+curl -xGET http://localhost:8080/hello
+```
+
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `nil` | `string` | Basic Hello World |
