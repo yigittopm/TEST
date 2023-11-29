@@ -25,7 +25,7 @@ Pull this repo and run ```main.go``` file`
 ```
 
 ```bash
-curl -xGET http://localhost:8080/hello
+curl -x GET http://localhost:8080/hello
 ```
 
 | Parameter | Type     | Description                |
