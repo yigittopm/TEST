@@ -18,7 +18,7 @@ Pull this repo and run ```main.go``` file`
 
 ## API Reference
 
-#### Get Hello World
+#### Get /hello
 
 ```http
   GET /hello
