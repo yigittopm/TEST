@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  psql-db:
+   container_name: psql-db
+   image: postgres:latest
+   restart: always
+   environment:
+    - POSTGRES_USER=""
+    - POSTGRES_PASSWORD=""
+   ports:
+     - 5432:5432
+   volumes:
+     - postgres_db:/var/lib/postgresql/data
+  go-api:
+   build:
+    context: .
+    dockerfile: Dockerfile
+   ports:
+     - 8080:8080
+     - 9090:9090
+   volumes:
+     - ./config/config_dev.yaml:/app/config/config_dev.yaml
+   depends_on:
+    - psql-db
+volumes:
+  postgres_db:
+   driver: local
