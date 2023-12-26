@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
-	_ "github.com/spf13/viper"
 )
 
 type (
@@ -21,7 +20,7 @@ type (
 	}
 )
 
-func LoadConfid(env string) (Config, error) {
+func LoadConfig(env string) (Config, error) {
 
 	viper.SetConfigFile(fmt.Sprintf("config/config_%s.yaml", env))
 
