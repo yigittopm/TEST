@@ -1,4 +1,5 @@
-[{"id":1,"first_name":"Mead","last_name":"Holsey","email":"mholsey0@sbwire.com","gender":"Male","phone":"+63 247 103 4058"},
+{
+    "users": [{"id":1,"first_name":"Mead","last_name":"Holsey","email":"mholsey0@sbwire.com","gender":"Male","phone":"+63 247 103 4058"},
 {"id":2,"first_name":"Mirabel","last_name":"Rawlin","email":"mrawlin1@economist.com","gender":"Female","phone":"+62 938 812 9488"},
 {"id":3,"first_name":"Cyb","last_name":"Wallbank","email":"cwallbank2@ucla.edu","gender":"Female","phone":"+255 274 428 8768"},
 {"id":4,"first_name":"Cherise","last_name":"Corzon","email":"ccorzon3@skyrock.com","gender":"Female","phone":"+86 367 467 5778"},
@@ -998,3 +999,4 @@
 {"id":998,"first_name":"Jeramey","last_name":"Kovelmann","email":"jkovelmannrp@businessweek.com","gender":"Male","phone":"+1 408 467 3588"},
 {"id":999,"first_name":"Lynde","last_name":"Bowery","email":"lboweryrq@vkontakte.ru","gender":"Female","phone":"+685 554 539 5213"},
 {"id":1000,"first_name":"Claresta","last_name":"Copnar","email":"ccopnarrr@ucsd.edu","gender":"Female","phone":"+57 797 598 5205"}]
+}
