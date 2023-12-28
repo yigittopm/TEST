@@ -12,17 +12,20 @@ type (
 	}
 
 	DatabaseConfig struct {
-		Host     string
-		Port     int
-		Name     string
-		User     string
-		Password string
+		DB_HOST     string `mapstructure:"POSTGRES_HOST"`
+		DB_USER     string `mapstructure:"POSTGRES_USER"`
+		DB_PASSWORD string `mapstructure:"POSTGRES_PASSWORD"`
+		DB_NAME     string `mapstructure:"POSTGRES_DB"`
+		DB_PORT     string `mapstructure:"POSTGRES_PORT"`
+		DB_SSLMODE  string `mapstructure:"POSTGRES_SSLMODE"`
+		DB_TIMEZONE string `mapstructure:"POSTGRES_TIMEZONE"`
 	}
 )
 
-func LoadConfig(env string) (Config, error) {
-
-	viper.SetConfigFile(fmt.Sprintf("config/config_%s.yaml", env))
+func LoadConfig() (Config, error) {
+	viper.AddConfigPath(".")
+	viper.SetConfigName("dev")
+	viper.SetConfigType("env")
 
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Printf("Error reading config file: %v\n", err)
