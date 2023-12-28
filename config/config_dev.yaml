@@ -1,6 +1,0 @@
-Database:
-  Host: mysql-db
-  Port: 3306
-  Name: users
-  User: psql
-  Password: pwd
