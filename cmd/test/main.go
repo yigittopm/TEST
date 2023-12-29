@@ -4,20 +4,19 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/yigittopm/test/config"
 	"github.com/yigittopm/test/database"
 )
 
 var (
-	cfg config.Config
+	//cfg *config.Config
 	err error
 )
 
 func init() {
-	cfg, err = config.LoadConfig()
-	if err != nil {
-		panic(err)
-	}
+	//cfg, err = config.LoadConfig()
+	//if err != nil {
+	//	panic(err)
+	//}
 }
 
 func main() {
