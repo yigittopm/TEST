@@ -29,3 +29,4 @@ go.work
 # Config
 /config/config_dev.json
 /bin
+.vscode
