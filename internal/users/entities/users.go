@@ -3,6 +3,8 @@ package entities
 import (
 	"time"
 
+	"github.com/yigittopm/test/config"
+	"github.com/yigittopm/test/internal/users/dtos"
 	"github.com/yigittopm/test/pkg/constant"
 )
 
@@ -19,11 +21,11 @@ type User struct {
 	UpdatedBy string
 }
 
-func New() User {
+func New(data dtos.CreateUserRequest, cfg config.Config) User {
 	return User{
-		Username:  "",
-		Email:     "",
-		Password:  "",
+		Username:  data.Username,
+		Email:     data.Email,
+		Password:  data.Password, // TODO: encrypt this field
 		UserType:  constant.USER_TYPE,
 		IsActive:  true,
 		CreatedAt: time.Now(),
