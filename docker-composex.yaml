@@ -32,8 +32,23 @@ services:
     depends_on:
       psql-admin:
         condition: service_started
+  go-api:
+    container_name: go-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      psql_database:
+        condition: service_started
+    networks:
+      - fullstack
 volumes:
   data:
     driver: local
 networks:
   fullstack:
+    driver: bridge

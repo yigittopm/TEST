@@ -1,29 +1,26 @@
 package main
 
 import (
-	"log"
-	"net/http"
+	"context"
+	"os"
 
-	"github.com/yigittopm/test/database"
+	"github.com/yigittopm/test/config"
+	"github.com/yigittopm/test/internal/app"
 )
-
-var (
-	//cfg *config.Config
-	err error
-)
-
-func init() {
-	//cfg, err = config.LoadConfig()
-	//if err != nil {
-	//	panic(err)
-	//}
-}
 
 func main() {
-	// Init DB
-	database.Start()
+	env := os.Getenv("env")
+	if env == "" {
+		env = "dev"
+	}
 
-	http.HandleFunc("/user", database.GetUser1)
+	cfg, err := config.LoadConfig(env)
+	if err != nil {
+		panic(err)
+	}
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	app := app.NewApp(context.Background(), cfg)
+	if err := app.Start(); err != nil {
+		panic(err)
+	}
 }

@@ -2,64 +2,46 @@ package database
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
 
 	_ "github.com/lib/pq"
+	"github.com/yigittopm/test/config"
 )
 
-var DB *sql.DB
-
-func Start() {
+func Start(cfg config.Config) (*sql.DB, error) {
 	var err error
 
 	source := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
-		"psql",
-		"postgres",
-		"password",
-		"godb",
-		"5432",
-		"disable",
-		"Turkey",
+		cfg.DB_HOST,
+		cfg.DB_USER,
+		cfg.DB_PASSWORD,
+		cfg.DB_NAME,
+		cfg.DB_PORT,
+		cfg.DB_SSLMODE,
+		cfg.DB_TIMEZONE,
 	)
+	fmt.Println(source)
+	//source := fmt.Sprintf(
+	//	"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s TimeZone=%s",
+	//	"psql",
+	//	"postgres",
+	//	"password",
+	//	"godb",
+	//	"5432",
+	//	"disable",
+	//	"Turkey",
+	//)
 
-	DB, err = sql.Open("postgres", source)
+	DB, err := sql.Open("postgres", source)
 	if err != nil {
-		log.Fatalf("Db not connected: %v", err)
+		return nil, err
 	}
 
 	err = DB.Ping()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	fmt.Println("Database succussfully connected.")
-}
-
-type User struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-}
-
-func GetUser1(w http.ResponseWriter, r *http.Request) {
-	var users []User
-	rows, err := DB.Query("SELECT * FROM users")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var user User
-		rows.Scan(&user.ID, &user.Username)
-		users = append(users, user)
-	}
-
-	usersBtye, _ := json.MarshalIndent(users, "", "\t")
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(usersBtye)
+	return DB, nil
 }
