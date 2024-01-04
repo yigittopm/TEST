@@ -11,8 +11,6 @@ services:
       - PGADMIN_LISTEN_PORT=${PGADMIN_LISTEN_PORT}
     ports:
       - "5050:5050"
-    networks:
-      - fullstack
   psql_database:
     image: postgres:14-alpine
     container_name: psql_database
@@ -27,13 +25,9 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     restart: always
-    networks:
-      - fullstack
     depends_on:
       psql-admin:
         condition: service_started
 volumes:
   data:
     driver: local
-networks:
-  fullstack:
