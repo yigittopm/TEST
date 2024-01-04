@@ -5,15 +5,29 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/labstack/echo"
+	"github.com/gofiber/fiber/v2"
 	"github.com/yigittopm/test/internal/users/dtos"
 	"github.com/yigittopm/test/internal/users/usecase"
-	"github.com/yigittopm/test/pkg/utils/response"
 )
 
+func newResponseError(err string) *fiber.Map {
+	return &fiber.Map{
+		"status": false,
+		"data":   "",
+		"error":  err,
+	}
+}
+
+func newResponseSuccess(data any) *fiber.Map {
+	return &fiber.Map{
+		"status": true,
+		"data":   data,
+		"error":  nil,
+	}
+}
+
 type Handler interface {
-	CreateUser(c echo.Context) error
-	UpdateUser(c echo.Context) error
+	CreateUser() fiber.Handler
 }
 
 type handler struct {
@@ -24,39 +38,28 @@ func New(uc usecase.Usecase) Handler {
 	return &handler{uc: uc}
 }
 
-func (h *handler) CreateUser(c echo.Context) error {
-	var (
-		ctx, cancel = context.WithTimeout(c.Request().Context(), time.Duration(30*time.Second))
-		payload     dtos.CreateUserRequest
-	)
-	defer cancel()
-
-	if err := c.Bind(&payload); err != nil {
-		return c.JSON(http.StatusBadRequest, response.NewResponseError(
-			http.StatusBadRequest,
-			response.MsgFailed,
-			err.Error(),
-		))
-	}
-
-	if err := payload.Validate(); err != nil {
-		return c.JSON(http.StatusBadRequest, response.NewResponseError(
-			http.StatusBadRequest,
-			response.MsgFailed,
-			err.Error()),
+func (h *handler) CreateUser() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		var (
+			ctx, cancel = context.WithTimeout(c.Context(), time.Duration(30*time.Second))
+			payload     dtos.CreateUserRequest
 		)
+		defer cancel()
+
+		if err := c.BodyParser(&payload); err != nil {
+			return c.Status(http.StatusBadRequest).JSON(newResponseError(err.Error()))
+		}
+
+		if err := payload.Validate(); err != nil {
+			return c.Status(http.StatusBadRequest).JSON(newResponseError(err.Error()))
+		}
+
+		userID, err := h.uc.Create(ctx, payload)
+		if err != nil {
+			return c.Status(http.StatusInternalServerError).JSON(newResponseError(err.Error()))
+		}
+
+		return c.Status(http.StatusOK).JSON(newResponseSuccess(userID))
 	}
 
-	userID, httpCode, err := h.uc.Create(ctx, payload)
-	if err != nil {
-		return c.JSON(httpCode, response.NewResponseError(
-			httpCode,
-			response.MsgFailed,
-			err.Error()),
-		)
-	}
-
-	return c.JSON(http.StatusOK, response.NewResponse(http.StatusOK, response.MsgSuccess, map[string]string{"id": userID}))
 }
-
-func (h *handler) UpdateUser(c echo.Context) error { return nil }

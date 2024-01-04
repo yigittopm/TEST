@@ -1,64 +1,37 @@
 package app
 
 import (
-	"context"
-	"database/sql"
-	"fmt"
-	"net/http"
+	"log"
 
-	"github.com/labstack/echo"
-	"github.com/yigittopm/test/config"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/joho/godotenv"
 	"github.com/yigittopm/test/database"
-
-	userV1 "github.com/yigittopm/test/internal/users/delivery/http/v1"
-	userRepository "github.com/yigittopm/test/internal/users/repository"
-	userUsecase "github.com/yigittopm/test/internal/users/usecase"
+	"github.com/yigittopm/test/internal/users"
 )
 
-type App struct {
-	DB   *sql.DB
-	Echo *echo.Echo
-	Cfg  config.Config
-}
-
-func NewApp(ctx context.Context, cfg config.Config) *App {
-	db, err := database.Start(cfg)
+func NewApp() {
+	err := godotenv.Load(".env")
 	if err != nil {
-		panic(err)
+		log.Fatalf("Error loading .env file: %s", err)
+	}
+	db, err := database.Start()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	return &App{
-		DB:   db,
-		Echo: echo.New(),
-		Cfg:  cfg,
-	}
-}
-
-func (app *App) Start() error {
-	if err := app.StartService(); err != nil {
-		return err
-	}
-
-	//app.Echo.Debug = app.Cfg.Server.Debug
-	//app.Echo.Use(middleware.AppCors())
-	//app.Echo.Use(middleware.CacheWithRevalidation)
-	return app.Echo.StartServer(&http.Server{
-		Addr:         fmt.Sprintf(":8080"),
-		ReadTimeout:  3000,
-		WriteTimeout: 3000,
+	app := fiber.New()
+	app.Use(cors.New())
+	app.Use(logger.New(logger.Config{
+		Format: "[${time}] ${ip}  ${status} ${latency} ${method} ${path}\n",
+	}))
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.Send([]byte("Welcome to the clean-architecture psql!"))
 	})
-}
 
-func (app *App) StartService() error {
-	userRepo := userRepository.New(app.DB)
+	v1 := app.Group("/api/v1")
+	users.Setup(v1, db)
 
-	userUsecase := userUsecase.New(userRepo, app.Cfg)
-
-	userController := userV1.New(userUsecase)
-
-	version := app.Echo.Group("/api/v1/")
-
-	userV1.UserRoute(version, userController, app.Cfg)
-
-	return nil
+	log.Fatal(app.Listen(":8080"))
 }

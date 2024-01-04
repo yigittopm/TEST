@@ -3,14 +3,13 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"fmt"
+	"strconv"
 
 	"github.com/yigittopm/test/internal/users/entities"
 )
 
 type Repository interface {
 	SaveNewUser(context.Context, entities.User) (string, error)
-	UpdateUserById(context.Context, entities.UpdateUser)
 }
 
 type repository struct {
@@ -22,15 +21,26 @@ func New(db *sql.DB) Repository {
 }
 
 func (repo *repository) SaveNewUser(ctx context.Context, user entities.User) (string, error) {
-	rows, err := repo.db.Query("INSERT INTO users (username, email, password) values ($1, $2, $3)",
-		user.Username, user.Email, user.Password)
+	stmt, err := repo.db.Prepare(`
+	INSERT INTO 
+	users  (username, email, password, user_type, is_active, created_by, updated_by) 
+	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	RETURNING id`)
+
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(rows)
-	return "", nil
-}
 
-func (repo *repository) UpdateUserById(ctx context.Context, user entities.UpdateUser) {
+	rows, err := stmt.Exec(user.Username, user.Email, user.Password, user.UserType, user.IsActive, user.CreatedBy, user.UpdatedBy)
+	if err != nil {
+		return "", err
+	}
 
+	id, err := rows.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+
+	res := strconv.FormatInt(id, 10)
+	return res, nil
 }
