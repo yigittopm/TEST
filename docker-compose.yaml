@@ -1,21 +1,7 @@
 version: "3.9"
 services:
-  psql-admin:
-    image: dpage/pgadmin4:6
-    container_name: psql-admin
-    env_file:
-      - .env
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
-      - PGADMIN_LISTEN_PORT=${PGADMIN_LISTEN_PORT}
-    ports:
-      - "5050:5050"
   psql_database:
     image: postgres:14-alpine
-    container_name: psql_database
-    env_file:
-      - .env
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -25,9 +11,6 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     restart: always
-    depends_on:
-      psql-admin:
-        condition: service_started
 volumes:
   data:
     driver: local
