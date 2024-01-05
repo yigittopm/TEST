@@ -4,19 +4,18 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func NewResponse(statusCode int, message string, data interface{}) *fiber.Map {
+func NewResponseError(message string, err string) *fiber.Map {
 	return &fiber.Map{
-		"status":  statusCode,
-		"data":    data,
+		"status":  false,
 		"message": message,
+		"error":   err,
 	}
 }
 
-func NewResponseError(statusCode int, messageStatus string, details string) *fiber.Map {
+func NewResponseSuccess(message string, data any) *fiber.Map {
 	return &fiber.Map{
-		"status":  statusCode,
-		"data":    "",
-		"message": messageStatus,
-		"error":   details,
+		"status":  true,
+		"message": message,
+		"data":    data,
 	}
 }

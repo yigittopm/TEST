@@ -8,25 +8,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/yigittopm/test/internal/users/dtos"
 	"github.com/yigittopm/test/internal/users/usecase"
+	"github.com/yigittopm/test/pkg/utils/response"
 )
 
-func newResponseError(err string) *fiber.Map {
-	return &fiber.Map{
-		"status": false,
-		"data":   "",
-		"error":  err,
-	}
-}
-
-func newResponseSuccess(data any) *fiber.Map {
-	return &fiber.Map{
-		"status": true,
-		"data":   data,
-		"error":  nil,
-	}
-}
-
 type Handler interface {
+	GetAllUsers() fiber.Handler
 	CreateUser() fiber.Handler
 }
 
@@ -47,19 +33,33 @@ func (h *handler) CreateUser() fiber.Handler {
 		defer cancel()
 
 		if err := c.BodyParser(&payload); err != nil {
-			return c.Status(http.StatusBadRequest).JSON(newResponseError(err.Error()))
+			return c.Status(http.StatusBadRequest).JSON(response.NewResponseError("Parse error.", err.Error()))
 		}
 
 		if err := payload.Validate(); err != nil {
-			return c.Status(http.StatusBadRequest).JSON(newResponseError(err.Error()))
+			return c.Status(http.StatusBadRequest).JSON(response.NewResponseError("Validate error.", err.Error()))
 		}
 
 		userID, err := h.uc.Create(ctx, payload)
 		if err != nil {
-			return c.Status(http.StatusInternalServerError).JSON(newResponseError(err.Error()))
+			return c.Status(http.StatusInternalServerError).JSON(response.NewResponseError("Create error.", err.Error()))
 		}
 
-		return c.Status(http.StatusOK).JSON(newResponseSuccess(userID))
+		return c.Status(http.StatusOK).JSON(response.NewResponseSuccess("Successfully created.", userID))
 	}
 
+}
+
+func (h *handler) GetAllUsers() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		ctx, cancel := context.WithTimeout(c.Context(), time.Duration(30*time.Second))
+		defer cancel()
+
+		users, err := h.uc.GetAll(ctx)
+		if err != nil {
+			c.Status(http.StatusBadRequest).JSON(response.NewResponseError("Error fetch users.", err.Error()))
+		}
+
+		return c.Status(http.StatusOK).JSON(response.NewResponseSuccess("Successfully get all users;", users))
+	}
 }

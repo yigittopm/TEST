@@ -14,5 +14,6 @@ func Setup(router fiber.Router, db *sql.DB) {
 	service := usersUsecase.New(repo)
 	handler := usersHandler.New(service)
 
+	router.Get("/users", handler.GetAllUsers())
 	router.Post("/users", handler.CreateUser())
 }

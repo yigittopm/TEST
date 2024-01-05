@@ -25,27 +25,27 @@ func Start() (*sql.DB, error) {
 		return nil, err
 	}
 
-	//AutoMigrate(DB)
+	AutoMigrate(DB)
 
 	return DB, nil
 }
 
 func AutoMigrate(DB *sql.DB) {
 	_, err := DB.Exec(`
-	CREATE TABLE IF NOT EXISTS users (
-		id serial primary key,
-		username varchar(255) not null,
-		email varchar(255) not null,
-		password varchar(255) not null,
-		user_type varchar(255),
-		is_active boolean,
-		created_at TIMESTAMP not null default NOW(),
-		created_by varchar(255) not null,
-		updated_at TIMESTAMP not null default NOW(),
-		updated_by varchar(255) not null
-	);
+		CREATE TABLE IF NOT EXISTS users (
+			id serial primary key,
+			username varchar(255) not null,
+			email varchar(255) not null,
+			password varchar(255) not null,
+			user_type varchar(255),
+			is_active boolean,
+			created_at TIMESTAMP not null default NOW(),
+			created_by varchar(255) not null,
+			updated_at TIMESTAMP not null default NOW(),
+			updated_by varchar(255) not null
+		);
 	`)
-	fmt.Print(err)
+
 	if err != nil {
 		log.Fatal(err)
 	}

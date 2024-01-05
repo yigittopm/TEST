@@ -2,8 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
-	"net/http"
 
 	"github.com/yigittopm/test/internal/users/dtos"
 	"github.com/yigittopm/test/internal/users/entities"
@@ -11,6 +9,7 @@ import (
 )
 
 type Usecase interface {
+	GetAll(ctx context.Context) ([]dtos.GetAllUsersResponse, error)
 	Create(ctx context.Context, payload dtos.CreateUserRequest) (userID string, err error)
 }
 
@@ -25,10 +24,9 @@ func New(repo repository.Repository) Usecase {
 }
 
 func (uc *usecase) Create(ctx context.Context, payload dtos.CreateUserRequest) (userID string, err error) {
-	userID, err = uc.repo.SaveNewUser(ctx, entities.New(payload))
-	if err != nil {
-		return userID, err
-	}
-	fmt.Println(userID, http.StatusOK, err)
-	return userID, err
+	return uc.repo.SaveNewUser(ctx, entities.New(payload))
+}
+
+func (uc *usecase) GetAll(ctx context.Context) ([]dtos.GetAllUsersResponse, error) {
+	return uc.repo.GetAllUsers(ctx)
 }

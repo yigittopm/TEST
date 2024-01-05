@@ -8,12 +8,6 @@ type CreateUserRequest struct {
 	Password string `json:"password"`
 }
 
-type CreateUserResponse struct {
-	ID        string `json:"id"`
-	Token     string `json:"token"`
-	ExpiredAt string `json:"expired_at"`
-}
-
 func (req CreateUserRequest) Validate() error {
 	return validation.ValidateStruct(&req,
 		validation.Field(&req.Username, validation.Required, validation.Length(3, 255)),
