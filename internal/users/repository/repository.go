@@ -11,6 +11,8 @@ import (
 type Repository interface {
 	GetAllUsers(context.Context) ([]dtos.GetAllUsersResponse, error)
 	SaveNewUser(context.Context, entities.User) (string, error)
+	UpdateUserById(context.Context, string) (string, error)
+	DeleteUserById(context.Context, string) (string, error)
 }
 
 type repository struct {
@@ -40,7 +42,7 @@ func (repo *repository) SaveNewUser(ctx context.Context, user entities.User) (st
 }
 
 func (repo *repository) GetAllUsers(ctx context.Context) ([]dtos.GetAllUsersResponse, error) {
-	rows, err := repo.db.Query("SELECT username, email, user_type FROM users")
+	rows, err := repo.db.Query("SELECT id,username, email, user_type FROM users")
 	if err != nil {
 		return nil, err
 	}
@@ -50,6 +52,7 @@ func (repo *repository) GetAllUsers(ctx context.Context) ([]dtos.GetAllUsersResp
 	for rows.Next() {
 		var user dtos.GetAllUsersResponse
 		if err := rows.Scan(
+			&user.ID,
 			&user.Username,
 			&user.Email,
 			&user.UserType,
@@ -61,4 +64,27 @@ func (repo *repository) GetAllUsers(ctx context.Context) ([]dtos.GetAllUsersResp
 	}
 
 	return users, err
+}
+
+func (repo *repository) UpdateUserById(ctx context.Context, userID string) (string, error) {
+	return "", nil
+}
+
+func (repo *repository) DeleteUserById(ctx context.Context, userID string) (string, error) {
+	stmt, err := repo.db.Prepare("DELETE FROM users WHERE id=$1")
+	if err != nil {
+		return "", err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(userID)
+	if err != nil {
+		return "", err
+	}
+
+	return userID, err
+}
+
+func (repo *repository) userIsExists(context.Context, string) bool {
+	return true
 }

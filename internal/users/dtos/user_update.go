@@ -2,17 +2,18 @@ package dtos
 
 import "github.com/invopop/validation"
 
-type CreateUserRequest struct {
+type UpdateUserRequest struct {
+	ID       string `json:"id"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
 
-type CreateUserResponse struct {
+type UpdateUserResponse struct {
 	ID string `json:"id"`
 }
 
-func (req CreateUserRequest) Validate() error {
+func (req UpdateUserRequest) Validate() error {
 	return validation.ValidateStruct(&req,
 		validation.Field(&req.Username, validation.Required, validation.Length(3, 255)),
 		validation.Field(&req.Email, validation.Required, validation.Length(8, 255)),

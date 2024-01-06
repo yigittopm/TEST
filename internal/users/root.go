@@ -16,4 +16,6 @@ func Setup(router fiber.Router, db *sql.DB) {
 
 	router.Get("/users", handler.GetAllUsers())
 	router.Post("/users", handler.CreateUser())
+	router.Patch("/users", handler.UpdateUserByID())
+	router.Delete("/users", handler.DeleteUserByID())
 }
