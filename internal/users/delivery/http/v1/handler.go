@@ -12,10 +12,10 @@ import (
 )
 
 type Handler interface {
-	GetAllUsers() fiber.Handler
-	CreateUser() fiber.Handler
-	UpdateUserByID() fiber.Handler
-	DeleteUserByID() fiber.Handler
+	GetAllUsers(c *fiber.Ctx) error
+	CreateUser(c *fiber.Ctx) error
+	UpdateUserByID(c *fiber.Ctx) error
+	DeleteUserByID(c *fiber.Ctx) error
 }
 
 type handler struct {
@@ -26,69 +26,80 @@ func New(uc usecase.Usecase) Handler {
 	return &handler{uc: uc}
 }
 
-func (h *handler) CreateUser() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		var (
-			ctx, cancel = context.WithTimeout(c.Context(), time.Duration(30*time.Second))
-			payload     dtos.CreateUserRequest
-		)
-		defer cancel()
+func (h *handler) CreateUser(c *fiber.Ctx) error {
+	var (
+		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
+		payload     dtos.CreateUserRequest
+	)
+	defer cancel()
 
-		if err := c.BodyParser(&payload); err != nil {
-			return c.Status(http.StatusBadRequest).JSON(response.NewResponseError("Parse error.", err.Error()))
-		}
-
-		if err := payload.Validate(); err != nil {
-			return c.Status(http.StatusBadRequest).JSON(response.NewResponseError("Validate error.", err.Error()))
-		}
-
-		userID, err := h.uc.Create(ctx, payload)
-		if err != nil {
-			return c.Status(http.StatusInternalServerError).JSON(response.NewResponseError("Create error.", err.Error()))
-		}
-
-		return c.Status(http.StatusOK).JSON(response.NewResponseSuccess("Successfully created.", userID))
+	if err := c.BodyParser(&payload); err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, "Parse error.")
 	}
+
+	if err := payload.Validate(); err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, "Validate error.")
+	}
+
+	userID, err := h.uc.Create(ctx, payload)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, "User create error.")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, userID)
 }
 
-func (h *handler) GetAllUsers() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		ctx, cancel := context.WithTimeout(c.Context(), time.Duration(30*time.Second))
-		defer cancel()
+func (h *handler) GetAllUsers(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(c.Context(), time.Duration(10*time.Second))
+	defer cancel()
 
-		users, err := h.uc.GetAll(ctx)
-		if err != nil {
-			c.Status(http.StatusBadRequest).JSON(response.NewResponseError("Error fetch users.", err.Error()))
-		}
-
-		return c.Status(http.StatusOK).JSON(response.NewResponseSuccess("Successfully get all users;", users))
+	users, err := h.uc.GetAll(ctx)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, "Error fetch users.")
 	}
+
+	return response.SuccessResponse(c, http.StatusOK, users)
 }
 
-func (h *handler) UpdateUserByID() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		return c.Status(200).JSON(response.NewResponseSuccess("", nil))
+func (h *handler) UpdateUserByID(c *fiber.Ctx) error {
+	var (
+		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
+		payload     dtos.UpdateUserRequest
+	)
+	defer cancel()
+
+	if err := c.BodyParser(&payload); err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, "Parse error.")
 	}
+
+	if err := payload.Validate(); err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, "Validate error.")
+	}
+
+	userID, err := h.uc.Update(ctx, payload)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, "User update error.")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, userID)
 }
 
-func (h *handler) DeleteUserByID() fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		var (
-			ctx, cancel = context.WithTimeout(c.Context(), time.Duration(30*time.Second))
-			payload     dtos.DeleteUserByIdRequest
-		)
-		defer cancel()
+func (h *handler) DeleteUserByID(c *fiber.Ctx) error {
+	var (
+		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
+		payload     dtos.DeleteUserByIdRequest
+	)
+	defer cancel()
 
-		payload.ID = c.Query("userID")
-		if payload.ID == "" {
-			return c.Status(http.StatusBadRequest).JSON(response.NewResponseError("User id not be null.", ""))
-		}
-
-		userId, err := h.uc.Delete(ctx, payload)
-		if err != nil {
-			return c.Status(http.StatusBadRequest).JSON(response.NewResponseError("Error delete user.", err.Error()))
-		}
-
-		return c.Status(http.StatusOK).JSON(response.NewResponseSuccess("Deleted user.", userId))
+	payload.ID = c.Query("userID")
+	if payload.ID == "" {
+		return response.ErrorResponse(c, http.StatusBadRequest, "User id not be null.")
 	}
+
+	userId, err := h.uc.Delete(ctx, payload)
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, "Error delete user.")
+	}
+
+	return response.SuccessResponse(c, http.StatusOK, userId)
 }

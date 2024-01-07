@@ -34,7 +34,7 @@ func (uc *usecase) Create(ctx context.Context, payload dtos.CreateUserRequest) (
 }
 
 func (uc *usecase) Update(ctx context.Context, payload dtos.UpdateUserRequest) (userID string, err error) {
-	return uc.repo.UpdateUserById(ctx, payload.ID)
+	return uc.repo.UpdateUserById(ctx, payload)
 }
 
 func (uc *usecase) Delete(ctx context.Context, payload dtos.DeleteUserByIdRequest) (string, error) {
