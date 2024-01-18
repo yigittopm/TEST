@@ -27,6 +27,8 @@ go.work
 *.pem
 
 # Config
+.env
+/config/config.go
 /config/config_dev.json
 /bin
 .vscode

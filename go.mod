@@ -5,7 +5,6 @@ go 1.20
 require (
 	github.com/gofiber/fiber/v2 v2.51.0
 	github.com/invopop/validation v0.3.0
-	github.com/joho/godotenv v1.5.1
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.18.2
 )
