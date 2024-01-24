@@ -26,6 +26,11 @@ func New(uc usecase.Usecase) Handler {
 	return &handler{uc: uc}
 }
 
+// CreateUser godoc
+// @Summary returns the HTTP headers
+// @Description use this to inspect the headers set by the portal and received by the service
+// @Produce json
+// @Router /v1/users [post]
 func (h *handler) CreateUser(c *fiber.Ctx) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
