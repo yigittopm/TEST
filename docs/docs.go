@@ -24,7 +24,31 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/v1/users": {
+            "get": {
+                "description": "use this to inspect the headers set by the portal and received by the service",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "returns the HTTP headers",
+                "responses": {}
+            },
+            "put": {
+                "description": "use this to inspect the headers set by the portal and received by the service",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "returns the HTTP headers",
+                "responses": {}
+            },
             "post": {
+                "description": "use this to inspect the headers set by the portal and received by the service",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "returns the HTTP headers",
+                "responses": {}
+            },
+            "delete": {
                 "description": "use this to inspect the headers set by the portal and received by the service",
                 "produces": [
                     "application/json"

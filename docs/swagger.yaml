@@ -13,7 +13,28 @@ info:
   version: "1.0"
 paths:
   /v1/users:
+    delete:
+      description: use this to inspect the headers set by the portal and received
+        by the service
+      produces:
+      - application/json
+      responses: {}
+      summary: returns the HTTP headers
+    get:
+      description: use this to inspect the headers set by the portal and received
+        by the service
+      produces:
+      - application/json
+      responses: {}
+      summary: returns the HTTP headers
     post:
+      description: use this to inspect the headers set by the portal and received
+        by the service
+      produces:
+      - application/json
+      responses: {}
+      summary: returns the HTTP headers
+    put:
       description: use this to inspect the headers set by the portal and received
         by the service
       produces:

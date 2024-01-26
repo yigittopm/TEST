@@ -13,24 +13,32 @@ import (
 )
 
 func NewApp() {
+	// Initial Database
 	db, err := database.Start()
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	// New Fiber App
 	app := fiber.New()
+
+	// Cors Middleware
 	app.Use(cors.New())
-	app.Get("/swagger/*", swagger.HandlerDefault) // default
+
+	// Swagger implementation
+	app.Get("/swagger/*", swagger.HandlerDefault)
+
+	// Logger
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${ip}  ${status} ${latency} ${method} ${path}\n",
 	}))
 
-	app.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.Send([]byte("Welcome to the clean-architecture psql!"))
-	})
-
+	// Handler Version
 	v1 := app.Group("/api/v1")
+
+	// Users
 	users.Setup(v1, db)
 
+	// Listening http port on :8080
 	log.Fatal(app.Listen(":8080"))
 }

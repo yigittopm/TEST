@@ -12,12 +12,15 @@ import (
 )
 
 func Setup(router fiber.Router, db *sql.DB) {
+	// Migrate users table
 	UserMigrate(db)
 
+	// Dependency Injection
 	repo := usersRepository.New(db)
-	service := usersUsecase.New(repo)
-	handler := usersHandler.New(service)
+	usecase := usersUsecase.New(repo)
+	handler := usersHandler.New(usecase)
 
+	// Routes
 	router.Get("/users", handler.GetAllUsers)
 	router.Post("/users", handler.CreateUser)
 	router.Patch("/users", handler.UpdateUserByID)
