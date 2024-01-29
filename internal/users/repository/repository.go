@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
+	"log"
 
 	"github.com/yigittopm/test/internal/users/dtos"
 	"github.com/yigittopm/test/internal/users/entities"
@@ -20,7 +22,35 @@ type repository struct {
 	db *sql.DB
 }
 
+func userMigrate(DB *sql.DB) error {
+	_, err := DB.Exec(`
+		CREATE TABLE IF NOT EXISTS users (
+			id serial primary key,
+			username varchar(255) not null,
+			email varchar(255) not null,
+			password varchar(255) not null,
+			user_type varchar(255),
+			is_active boolean,
+			created_at TIMESTAMP not null default NOW(),
+			created_by varchar(255) not null,
+			updated_at TIMESTAMP not null default NOW(),
+			updated_by varchar(255) not null
+		);
+	`)
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Success created users table")
+	return nil
+}
+
 func New(db *sql.DB) Repository {
+	if err := userMigrate(db); err != nil {
+		log.Fatal(err)
+	}
+
 	return &repository{db: db}
 }
 

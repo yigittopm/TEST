@@ -27,9 +27,14 @@ func New(uc usecase.Usecase) Handler {
 }
 
 // CreateUser godoc
-// @Summary returns the HTTP headers
-// @Description use this to inspect the headers set by the portal and received by the service
+// @Tags User
+// @Description create product.
+// @Summary create product
+// @Accept json
 // @Produce json
+// @Param request body model.ProductCreateOrUpdateModel true "Request Body"
+// @Success 200 {object} dtos.CreateUserResponse
+// @Security JWT
 // @Router /v1/users [post]
 func (h *handler) CreateUser(c *fiber.Ctx) error {
 	var (
@@ -55,9 +60,14 @@ func (h *handler) CreateUser(c *fiber.Ctx) error {
 }
 
 // GetAllUsers godoc
-// @Summary returns the HTTP headers
-// @Description use this to inspect the headers set by the portal and received by the service
+// @Tags User
+// @Description create product.
+// @Summary create product
+// @Accept json
 // @Produce json
+// @Param request body model.ProductCreateOrUpdateModel true "Request Body"
+// @Success 200 {object} model.GeneralResponse
+// @Security JWT
 // @Router /v1/users [get]
 func (h *handler) GetAllUsers(c *fiber.Ctx) error {
 	ctx, cancel := context.WithTimeout(c.Context(), time.Duration(10*time.Second))
@@ -72,9 +82,14 @@ func (h *handler) GetAllUsers(c *fiber.Ctx) error {
 }
 
 // UpdateUserByID godoc
-// @Summary returns the HTTP headers
-// @Description use this to inspect the headers set by the portal and received by the service
+// @Tags User
+// @Description create product.
+// @Summary create product
+// @Accept json
 // @Produce json
+// @Param request body model.ProductCreateOrUpdateModel true "Request Body"
+// @Success 200 {object} model.GeneralResponse
+// @Security JWT
 // @Router /v1/users [put]
 func (h *handler) UpdateUserByID(c *fiber.Ctx) error {
 	var (
@@ -100,9 +115,14 @@ func (h *handler) UpdateUserByID(c *fiber.Ctx) error {
 }
 
 // DeleteUserByID godoc
-// @Summary returns the HTTP headers
-// @Description use this to inspect the headers set by the portal and received by the service
+// @Tags User
+// @Description create product.
+// @Summary create product
+// @Accept json
 // @Produce json
+// @Param request body model.ProductCreateOrUpdateModel true "Request Body"
+// @Success 200 {object} model.GeneralResponse
+// @Security JWT
 // @Router /v1/users [delete]
 func (h *handler) DeleteUserByID(c *fiber.Ctx) error {
 	var (
