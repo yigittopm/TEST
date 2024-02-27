@@ -22,6 +22,10 @@ down:
 up: down
 	docker compose up --build
 
+# Tests the project
+test: 
+	go test -v ./...
+
 # Swagger docs update
 swag:
 	swag init -g ${MAIN_PATH} -o ./docs  

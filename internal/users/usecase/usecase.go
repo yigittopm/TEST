@@ -9,10 +9,8 @@ import (
 )
 
 type Usecase interface {
-	GetAll(ctx context.Context) ([]dtos.GetAllUsersResponse, error)
-	Create(ctx context.Context, payload dtos.CreateUserRequest) (userID string, err error)
-	Update(ctx context.Context, payload dtos.UpdateUserRequest) (userID string, err error)
-	Delete(ctx context.Context, payload dtos.DeleteUserByIdRequest) (userID string, err error)
+	Register(ctx context.Context, payload dtos.RegisterRequest) (dtos.RegisterResponse, error)
+	Login(ctx context.Context, payload dtos.LoginRequest) (dtos.LoginResponse, error)
 }
 
 type usecase struct {
@@ -25,18 +23,12 @@ func New(repo repository.Repository) Usecase {
 	}
 }
 
-func (uc *usecase) GetAll(ctx context.Context) ([]dtos.GetAllUsersResponse, error) {
-	return uc.repo.GetAllUsers(ctx)
+func (uc *usecase) Register(ctx context.Context, payload dtos.RegisterRequest) (dtos.RegisterResponse, error) {
+	user := entities.New(payload)
+
+	return uc.repo.Register(ctx, user)
 }
 
-func (uc *usecase) Create(ctx context.Context, payload dtos.CreateUserRequest) (userID string, err error) {
-	return uc.repo.SaveNewUser(ctx, entities.New(payload))
-}
-
-func (uc *usecase) Update(ctx context.Context, payload dtos.UpdateUserRequest) (userID string, err error) {
-	return uc.repo.UpdateUserById(ctx, payload)
-}
-
-func (uc *usecase) Delete(ctx context.Context, payload dtos.DeleteUserByIdRequest) (string, error) {
-	return uc.repo.DeleteUserById(ctx, payload.ID)
+func (uc *usecase) Login(ctx context.Context, payload dtos.LoginRequest) (dtos.LoginResponse, error) {
+	return uc.repo.Login(ctx, payload)
 }

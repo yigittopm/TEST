@@ -8,7 +8,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
 	"github.com/yigittopm/test/database"
-
 	"github.com/yigittopm/test/internal/users"
 )
 
@@ -34,10 +33,10 @@ func NewApp() {
 	}))
 
 	// Handler Version
-	v1 := app.Group("/api/v1")
+	version := app.Group("/api/v1") // V1
 
 	// Users
-	users.Setup(v1, db)
+	users.Setup(version, db)
 
 	// Listening http port on :8080
 	log.Fatal(app.Listen(":8080"))

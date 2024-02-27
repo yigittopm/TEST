@@ -2,6 +2,7 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -12,10 +13,8 @@ import (
 )
 
 type Handler interface {
-	GetAllUsers(c *fiber.Ctx) error
-	CreateUser(c *fiber.Ctx) error
-	UpdateUserByID(c *fiber.Ctx) error
-	DeleteUserByID(c *fiber.Ctx) error
+	Register(c *fiber.Ctx) error
+	Login(c *fiber.Ctx) error
 }
 
 type handler struct {
@@ -26,40 +25,39 @@ func New(uc usecase.Usecase) Handler {
 	return &handler{uc: uc}
 }
 
-// CreateUser godoc
+// Register godoc
 // @Tags User
-// @Description create product.
-// @Summary create product
+// @Description register user.
+// @Summary register user
 // @Accept json
 // @Produce json
-// @Param request body model.ProductCreateOrUpdateModel true "Request Body"
-// @Success 200 {object} dtos.CreateUserResponse
-// @Security JWT
-// @Router /v1/users [post]
-func (h *handler) CreateUser(c *fiber.Ctx) error {
+// @Param request body dtos.RegisterRequest true "Request Body"
+// @Success 200 {string} string "User ID"
+// @Router /v1/auth/register [post]
+func (h *handler) Register(c *fiber.Ctx) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
-		payload     dtos.CreateUserRequest
+		payload     dtos.RegisterRequest
 	)
 	defer cancel()
 
 	if err := c.BodyParser(&payload); err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, "Parse error.")
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Parse error: %v", err.Error()))
 	}
 
 	if err := payload.Validate(); err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, "Validate error.")
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Validate error: %v", err.Error()))
 	}
 
-	userID, err := h.uc.Create(ctx, payload)
+	userID, err := h.uc.Register(ctx, payload)
 	if err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, "User create error.")
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Register error: %v", err.Error()))
 	}
 
 	return response.SuccessResponse(c, http.StatusOK, userID)
 }
 
-// GetAllUsers godoc
+// Login godoc
 // @Tags User
 // @Description create product.
 // @Summary create product
@@ -68,78 +66,26 @@ func (h *handler) CreateUser(c *fiber.Ctx) error {
 // @Param request body model.ProductCreateOrUpdateModel true "Request Body"
 // @Success 200 {object} model.GeneralResponse
 // @Security JWT
-// @Router /v1/users [get]
-func (h *handler) GetAllUsers(c *fiber.Ctx) error {
-	ctx, cancel := context.WithTimeout(c.Context(), time.Duration(10*time.Second))
-	defer cancel()
-
-	users, err := h.uc.GetAll(ctx)
-	if err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, "Error fetch users.")
-	}
-
-	return response.SuccessResponse(c, http.StatusOK, users)
-}
-
-// UpdateUserByID godoc
-// @Tags User
-// @Description create product.
-// @Summary create product
-// @Accept json
-// @Produce json
-// @Param request body model.ProductCreateOrUpdateModel true "Request Body"
-// @Success 200 {object} model.GeneralResponse
-// @Security JWT
-// @Router /v1/users [put]
-func (h *handler) UpdateUserByID(c *fiber.Ctx) error {
+// @Router /v1/auth/login [post]
+func (h *handler) Login(c *fiber.Ctx) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
-		payload     dtos.UpdateUserRequest
+		payload     dtos.LoginRequest
 	)
 	defer cancel()
 
 	if err := c.BodyParser(&payload); err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, "Parse error.")
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Parse error: %v", err.Error()))
 	}
 
 	if err := payload.Validate(); err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, "Validate error.")
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Validation error: %v", err.Error()))
 	}
 
-	userID, err := h.uc.Update(ctx, payload)
+	user, err := h.uc.Login(ctx, payload)
 	if err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, "User update error.")
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Login error: %v", err.Error()))
 	}
 
-	return response.SuccessResponse(c, http.StatusOK, userID)
-}
-
-// DeleteUserByID godoc
-// @Tags User
-// @Description create product.
-// @Summary create product
-// @Accept json
-// @Produce json
-// @Param request body model.ProductCreateOrUpdateModel true "Request Body"
-// @Success 200 {object} model.GeneralResponse
-// @Security JWT
-// @Router /v1/users [delete]
-func (h *handler) DeleteUserByID(c *fiber.Ctx) error {
-	var (
-		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
-		payload     dtos.DeleteUserByIdRequest
-	)
-	defer cancel()
-
-	payload.ID = c.Query("userID")
-	if payload.ID == "" {
-		return response.ErrorResponse(c, http.StatusBadRequest, "User id not be null.")
-	}
-
-	userId, err := h.uc.Delete(ctx, payload)
-	if err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, "Error delete user.")
-	}
-
-	return response.SuccessResponse(c, http.StatusOK, userId)
+	return response.SuccessResponse(c, http.StatusOK, user)
 }
