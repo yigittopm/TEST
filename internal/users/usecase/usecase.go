@@ -3,9 +3,9 @@ package usecase
 import (
 	"context"
 
-	"github.com/yigittopm/test/internal/users/dtos"
-	"github.com/yigittopm/test/internal/users/entities"
-	"github.com/yigittopm/test/internal/users/repository"
+	"github.com/yigittopm/wl-auth/internal/users/dtos"
+	"github.com/yigittopm/wl-auth/internal/users/entities"
+	"github.com/yigittopm/wl-auth/internal/users/repository"
 )
 
 type Usecase interface {

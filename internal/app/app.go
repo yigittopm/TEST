@@ -7,8 +7,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
-	"github.com/yigittopm/test/database"
-	"github.com/yigittopm/test/internal/users"
+	"github.com/yigittopm/wl-auth/database"
+	"github.com/yigittopm/wl-auth/internal/users"
 )
 
 func NewApp() {

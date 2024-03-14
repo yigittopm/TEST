@@ -4,11 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/yigittopm/test/database"
+	"github.com/yigittopm/wl-auth/database"
 
-	"github.com/yigittopm/test/internal/users/dtos"
-	usersRepository "github.com/yigittopm/test/internal/users/repository"
-	usersUsecase "github.com/yigittopm/test/internal/users/usecase"
+	"github.com/yigittopm/wl-auth/internal/users/dtos"
+	usersRepository "github.com/yigittopm/wl-auth/internal/users/repository"
+	usersUsecase "github.com/yigittopm/wl-auth/internal/users/usecase"
 )
 
 var usecase usersUsecase.Usecase

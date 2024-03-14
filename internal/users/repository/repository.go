@@ -3,8 +3,8 @@ package repository
 import (
 	"context"
 
-	"github.com/yigittopm/test/internal/users/dtos"
-	"github.com/yigittopm/test/internal/users/entities"
+	"github.com/yigittopm/wl-auth/internal/users/dtos"
+	"github.com/yigittopm/wl-auth/internal/users/entities"
 	"gorm.io/gorm"
 )
 

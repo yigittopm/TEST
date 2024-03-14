@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/yigittopm/test/internal/users/dtos"
-	"github.com/yigittopm/test/internal/users/usecase"
-	"github.com/yigittopm/test/pkg/utils/response"
+	"github.com/yigittopm/wl-auth/internal/users/dtos"
+	"github.com/yigittopm/wl-auth/internal/users/usecase"
+	"github.com/yigittopm/wl-auth/pkg/utils/response"
 )
 
 type Handler interface {

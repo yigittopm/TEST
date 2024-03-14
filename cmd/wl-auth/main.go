@@ -1,8 +1,8 @@
 package main
 
 import (
-	_ "github.com/yigittopm/test/docs"
-	"github.com/yigittopm/test/internal/app"
+	_ "github.com/yigittopm/wl-auth/docs"
+	"github.com/yigittopm/wl-auth/internal/app"
 )
 
 // @title Fiber Example API

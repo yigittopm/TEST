@@ -2,10 +2,10 @@ package users
 
 import (
 	"github.com/gofiber/fiber/v2"
-	usersHandler "github.com/yigittopm/test/internal/users/delivery/http/v1"
-	userEntities "github.com/yigittopm/test/internal/users/entities"
-	usersRepository "github.com/yigittopm/test/internal/users/repository"
-	usersUsecase "github.com/yigittopm/test/internal/users/usecase"
+	usersHandler "github.com/yigittopm/wl-auth/internal/users/delivery/http/v1"
+	userEntities "github.com/yigittopm/wl-auth/internal/users/entities"
+	usersRepository "github.com/yigittopm/wl-auth/internal/users/repository"
+	usersUsecase "github.com/yigittopm/wl-auth/internal/users/usecase"
 	"gorm.io/gorm"
 )
 

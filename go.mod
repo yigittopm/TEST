@@ -1,4 +1,4 @@
-module github.com/yigittopm/test
+module github.com/yigittopm/wl-auth
 
 go 1.20
 

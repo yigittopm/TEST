@@ -1,8 +1,8 @@
 package entities
 
 import (
-	"github.com/yigittopm/test/internal/users/dtos"
-	"github.com/yigittopm/test/pkg/constant"
+	"github.com/yigittopm/wl-auth/internal/users/dtos"
+	"github.com/yigittopm/wl-auth/pkg/constant"
 	"gorm.io/gorm"
 )
 
