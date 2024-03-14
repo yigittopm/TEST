@@ -26,14 +26,14 @@ func New(uc usecase.Usecase) Handler {
 }
 
 // Register godoc
-// @Tags User
-// @Description register user.
-// @Summary register user
-// @Accept json
-// @Produce json
-// @Param request body dtos.RegisterRequest true "Request Body"
-// @Success 200 {string} string "User ID"
-// @Router /v1/auth/register [post]
+// @Summary Register a new user
+// @Description Register a new user with the given details
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param user body dtos.RegisterRequest true "User details for registration"
+// @Success 200 {object} dtos.RegisterResponse "Successfully registered user"
+// @Router /api/v1/auth/register [post]
 func (h *handler) Register(c *fiber.Ctx) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
@@ -58,15 +58,14 @@ func (h *handler) Register(c *fiber.Ctx) error {
 }
 
 // Login godoc
-// @Tags User
-// @Description create product.
-// @Summary create product
-// @Accept json
-// @Produce json
-// @Param request body model.ProductCreateOrUpdateModel true "Request Body"
-// @Success 200 {object} model.GeneralResponse
-// @Security JWT
-// @Router /v1/auth/login [post]
+// @Summary Log in a user
+// @Description Log in a user with the given credentials
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param user body dtos.LoginRequest true "User credentials for login"
+// @Success 200 {object} dtos.LoginResponse "Successfully logged in user"
+// @Router /api/v1/auth/login [post]
 func (h *handler) Login(c *fiber.Ctx) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
