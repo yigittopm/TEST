@@ -5,32 +5,42 @@ A simple API and automatic Docker Hub image refresh with Go
 
 ## Installation
 
-Pull this repo and run ```main.go``` file`
+Pull this repo and follow the steps below
 
 ```bash
-  git clone https://github.com/yigittopm/test.git
-  cd test
+  git clone https://github.com/WeLedger/wl-auth.git
+  cd wl-auth
 ```
 
 ```bash
-  go run main.go
+  make up
 ```
 
 ## API Reference
 
-#### Get /hello
+#### Authentication
+
+>Login
 
 ```http
-  GET /hello
+  POST /api/v1/auth/login
 ```
 
 ```bash
-curl -x GET http://localhost:8080/hello
+curl -X POST http://localhost:8080/api/v1/auth/login
+   -H "Content-Type: application/json"
+   -d '{"username": "John", "password": "12345678"}'  
 ```
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `nil` | `string` | Basic Hello World |
+---
+>Register
 
+```http
+  POST /api/v1/auth/register
+```
 
-Returns "Hello World" string.
+```bash
+curl -X POST http://localhost:8080/api/v1/auth/register
+   -H "Content-Type: application/json"
+   -d '{"email": "john@doe.com", "username": "John", "password": "12345678"}'  
+```
