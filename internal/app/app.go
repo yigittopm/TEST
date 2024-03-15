@@ -1,13 +1,13 @@
 package app
 
 import (
+	"github.com/yigittopm/wl-auth/pkg/database"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/swagger"
-	"github.com/yigittopm/wl-auth/database"
 	"github.com/yigittopm/wl-auth/internal/users"
 )
 

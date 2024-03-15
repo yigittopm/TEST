@@ -1,5 +1,5 @@
-MAIN_PATH=cmd/test/main.go # Contains main.go file
-BINARY_FILE=binary 		   # Binary file name
+MAIN_PATH=cmd/wl-auth/main.go # Contains main.go file
+BINARY_FILE=binary 		      # Binary file name
 
 # Removes binary
 clean:

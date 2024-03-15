@@ -2,9 +2,8 @@ package usecase
 
 import (
 	"context"
+	"github.com/yigittopm/wl-auth/pkg/database"
 	"testing"
-
-	"github.com/yigittopm/wl-auth/database"
 
 	"github.com/yigittopm/wl-auth/internal/users/dtos"
 	usersRepository "github.com/yigittopm/wl-auth/internal/users/repository"

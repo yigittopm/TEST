@@ -33,7 +33,7 @@ func New(uc usecase.Usecase) Handler {
 // @Produce  json
 // @Param user body dtos.RegisterRequest true "User details for registration"
 // @Success 200 {object} dtos.RegisterResponse "Successfully registered user"
-// @Router /api/v1/auth/register [post]
+// @Router /v1/auth/register [post]
 func (h *handler) Register(c *fiber.Ctx) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
@@ -65,7 +65,7 @@ func (h *handler) Register(c *fiber.Ctx) error {
 // @Produce  json
 // @Param user body dtos.LoginRequest true "User credentials for login"
 // @Success 200 {object} dtos.LoginResponse "Successfully logged in user"
-// @Router /api/v1/auth/login [post]
+// @Router /v1/auth/login [post]
 func (h *handler) Login(c *fiber.Ctx) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))

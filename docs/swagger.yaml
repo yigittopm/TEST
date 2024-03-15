@@ -1,44 +1,88 @@
 basePath: /api
+definitions:
+  dtos.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dtos.LoginResponse:
+    properties:
+      id:
+        type: integer
+      isActive:
+        type: boolean
+    type: object
+  dtos.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dtos.RegisterResponse:
+    properties:
+      id:
+        type: integer
+    type: object
 host: localhost:8080
 info:
   contact:
     email: fiber@swagger.io
     name: API Support
-  description: This is a sample swagger for Fiber
+  description: This is a sample swagger for WeLedger Auth
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: Fiber Example API
+  title: WeLedger Auth API
   version: "1.0"
 paths:
-  /v1/users:
-    delete:
-      description: use this to inspect the headers set by the portal and received
-        by the service
-      produces:
-      - application/json
-      responses: {}
-      summary: returns the HTTP headers
-    get:
-      description: use this to inspect the headers set by the portal and received
-        by the service
-      produces:
-      - application/json
-      responses: {}
-      summary: returns the HTTP headers
+  /v1/auth/login:
     post:
-      description: use this to inspect the headers set by the portal and received
-        by the service
+      consumes:
+      - application/json
+      description: Log in a user with the given credentials
+      parameters:
+      - description: User credentials for login
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginRequest'
       produces:
       - application/json
-      responses: {}
-      summary: returns the HTTP headers
-    put:
-      description: use this to inspect the headers set by the portal and received
-        by the service
+      responses:
+        "200":
+          description: Successfully logged in user
+          schema:
+            $ref: '#/definitions/dtos.LoginResponse'
+      summary: Log in a user
+      tags:
+      - users
+  /v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with the given details
+      parameters:
+      - description: User details for registration
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RegisterRequest'
       produces:
       - application/json
-      responses: {}
-      summary: returns the HTTP headers
+      responses:
+        "200":
+          description: Successfully registered user
+          schema:
+            $ref: '#/definitions/dtos.RegisterResponse'
+      summary: Register a new user
+      tags:
+      - users
 swagger: "2.0"

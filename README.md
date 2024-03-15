@@ -16,7 +16,9 @@ Pull this repo and follow the steps below
   make up
 ```
 
-## API Reference
+## Swagger API Reference
+
+> http://localhost:8080/swagger/index.html
 
 #### Authentication
 

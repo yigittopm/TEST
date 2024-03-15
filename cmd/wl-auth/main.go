@@ -5,9 +5,9 @@ import (
 	"github.com/yigittopm/wl-auth/internal/app"
 )
 
-// @title Fiber Example API
+// @title WeLedger Auth API
 // @version 1.0
-// @description This is a sample swagger for Fiber
+// @description This is a sample swagger for WeLedger Auth
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.email fiber@swagger.io
