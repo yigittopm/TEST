@@ -2,9 +2,14 @@ package jwt
 
 import (
 	"errors"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+)
+
+var (
+	secretKey = os.Getenv("JWT_SECRET_KEY")
 )
 
 func Sign(userId uint, expirationTime time.Duration) (string, error) {
@@ -17,7 +22,6 @@ func Sign(userId uint, expirationTime time.Duration) (string, error) {
 	claims["exp"] = time.Now().Add(expirationTime).Unix()
 
 	// Sign the token with a secret key
-	secretKey := "your-secret-key"
 	signedToken, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		return "", err
@@ -26,23 +30,21 @@ func Sign(userId uint, expirationTime time.Duration) (string, error) {
 	return signedToken, nil
 }
 
-func Verify(token string) (string, error) {
+func Verify(token string) (uint, error) {
 	// Verify the token and extract the claims
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		// Provide the secret key used for signing the token
-		secretKey := "your-secret-key"
 		return []byte(secretKey), nil
 	})
-
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	claims, ok := parsedToken.Claims.(jwt.MapClaims)
 	if !ok || !parsedToken.Valid {
-		return "", errors.New("invalid token")
+		return 0, errors.New("invalid token")
 	}
 
-	userId := claims["userId"].(string)
-	return userId, nil
+	userId := claims["userId"].(float64)
+	return uint(userId), nil
 }
