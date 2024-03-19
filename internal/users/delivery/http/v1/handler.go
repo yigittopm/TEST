@@ -15,6 +15,7 @@ import (
 type Handler interface {
 	Register(c *fiber.Ctx) error
 	Login(c *fiber.Ctx) error
+	Logout(c *fiber.Ctx) error
 	Profile(c *fiber.Ctx) error
 }
 
@@ -94,6 +95,27 @@ func (h *handler) Login(c *fiber.Ctx) error {
 	})
 
 	return response.SuccessResponse(c, http.StatusOK, user)
+}
+
+// Logout godoc
+// @Summary Log out a user
+// @Description Log out the authenticated user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Success 200 {string} string "Successfully logged out"
+// @Failure 400 {object} ErrorResponse "Failed to log out user"
+// @Router /v1/auth/logout [post]
+func (h *handler) Logout(c *fiber.Ctx) error {
+	c.Locals("userId", nil)
+	c.Cookie(&fiber.Cookie{
+		Name:    "jwt",
+		Value:   "",
+		Expires: time.Now().Add(-time.Hour),
+	})
+
+	return response.SuccessResponse(c, http.StatusOK, "Successfully logged out")
 }
 
 // Profile godoc
