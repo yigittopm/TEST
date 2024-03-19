@@ -9,7 +9,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/yigittopm/wl-auth/internal/users/dtos"
 	"github.com/yigittopm/wl-auth/internal/users/usecase"
-	"github.com/yigittopm/wl-auth/pkg/jwt"
 	"github.com/yigittopm/wl-auth/pkg/utils/response"
 )
 
@@ -88,22 +87,32 @@ func (h *handler) Login(c *fiber.Ctx) error {
 		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Login error: %v", err.Error()))
 	}
 
-	//c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.AccessToken))
+	c.Cookie(&fiber.Cookie{
+		Name:    "jwt",
+		Value:   user.AccessToken,
+		Expires: time.Now().Add(time.Hour * 24),
+	})
+
 	return response.SuccessResponse(c, http.StatusOK, user)
 }
 
+// Profile godoc
+// @Summary Get user profile
+// @Description Get the profile of the authenticated user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Success 200 {object} dtos.ProfileResponse "Successfully retrieved user profile"
+// @Failure 400 {object} ErrorResponse "Failed to retrieve user profile"
+// @Router /v1/auth/profile [get]
 func (h *handler) Profile(c *fiber.Ctx) error {
 	var (
 		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
 	)
 	defer cancel()
 
-	bearerToken := c.Get("Authorization")
-
-	userId, err := jwt.Verify(bearerToken[7:])
-	if err != nil {
-		return response.ErrorResponse(c, http.StatusUnauthorized, fmt.Sprintf("Unauthorized: %v", err.Error()))
-	}
+	userId := c.Locals("userId").(uint)
 
 	user, err := h.uc.Profile(ctx, dtos.ProfileRequest{ID: userId})
 	if err != nil {

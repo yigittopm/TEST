@@ -43,5 +43,4 @@ func TestRegister(t *testing.T) {
 			}
 		})
 	}
-
 }
