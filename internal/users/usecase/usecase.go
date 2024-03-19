@@ -40,7 +40,7 @@ func (uc *usecase) Login(ctx context.Context, payload dtos.LoginRequest) (dtos.L
 		return dtos.LoginResponse{}, err
 	}
 
-	accessToken, err := jwt.Sign(userId, time.Hour*24)
+	accessToken, err := jwt.Sign(userId, time.Hour*8)
 	if err != nil {
 		return dtos.LoginResponse{}, err
 	}

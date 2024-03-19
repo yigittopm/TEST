@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,7 +24,7 @@ func AuthRequired() fiber.Handler {
 		// Token'ı doğrula
 		userId, err := jwt.Verify(tokenString)
 		if err != nil {
-			return response.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized")
+			return response.ErrorResponse(c, http.StatusUnauthorized, fmt.Sprintf("Unauthorized: %v", err.Error()))
 		}
 
 		c.Locals("userId", userId)
