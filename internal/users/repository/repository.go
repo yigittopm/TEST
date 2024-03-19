@@ -10,7 +10,8 @@ import (
 
 type Repository interface {
 	Register(context.Context, entities.User) (dtos.RegisterResponse, error)
-	Login(context.Context, dtos.LoginRequest) (dtos.LoginResponse, error)
+	Login(context.Context, dtos.LoginRequest) (uint, error)
+	Profile(context.Context, dtos.ProfileRequest) (entities.User, error)
 }
 
 type repository struct {
@@ -29,12 +30,14 @@ func (repo *repository) Register(ctx context.Context, user entities.User) (dtos.
 	}, result.Error
 }
 
-func (repo *repository) Login(ctx context.Context, payload dtos.LoginRequest) (dtos.LoginResponse, error) {
+func (repo *repository) Login(ctx context.Context, payload dtos.LoginRequest) (uint, error) {
 	user := entities.User{}
 	result := repo.db.First(&user, "username = ? AND password = ?", payload.Username, payload.Password)
+	return user.ID, result.Error
+}
 
-	return dtos.LoginResponse{
-		ID:       user.ID,
-		IsActive: user.IsActive,
-	}, result.Error
+func (repo *repository) Profile(ctx context.Context, payload dtos.ProfileRequest) (entities.User, error) {
+	var user entities.User
+	result := repo.db.Find(&user, "id = ?", payload.ID)
+	return user, result.Error
 }

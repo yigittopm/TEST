@@ -8,8 +8,8 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	ID       uint `json:"id"`
-	IsActive bool `json:"isActive"`
+	ID          uint   `json:"id"`
+	AccessToken string `json:"accessToken"`
 }
 
 func (req LoginRequest) Validate() error {

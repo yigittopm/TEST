@@ -9,12 +9,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/yigittopm/wl-auth/internal/users/dtos"
 	"github.com/yigittopm/wl-auth/internal/users/usecase"
+	"github.com/yigittopm/wl-auth/pkg/jwt"
 	"github.com/yigittopm/wl-auth/pkg/utils/response"
 )
 
 type Handler interface {
 	Register(c *fiber.Ctx) error
 	Login(c *fiber.Ctx) error
+	Profile(c *fiber.Ctx) error
 }
 
 type handler struct {
@@ -84,6 +86,28 @@ func (h *handler) Login(c *fiber.Ctx) error {
 	user, err := h.uc.Login(ctx, payload)
 	if err != nil {
 		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Login error: %v", err.Error()))
+	}
+
+	//c.Request().Header.Set("Authorization", fmt.Sprintf("Bearer %s", user.AccessToken))
+	return response.SuccessResponse(c, http.StatusOK, user)
+}
+
+func (h *handler) Profile(c *fiber.Ctx) error {
+	var (
+		ctx, cancel = context.WithTimeout(c.Context(), time.Duration(10*time.Second))
+	)
+	defer cancel()
+
+	bearerToken := c.Get("Authorization")
+
+	userId, err := jwt.Verify(bearerToken[7:])
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusUnauthorized, fmt.Sprintf("Unauthorized: %v", err.Error()))
+	}
+
+	user, err := h.uc.Profile(ctx, dtos.ProfileRequest{ID: userId})
+	if err != nil {
+		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Profile error: %v", err.Error()))
 	}
 
 	return response.SuccessResponse(c, http.StatusOK, user)

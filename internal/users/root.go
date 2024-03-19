@@ -6,6 +6,7 @@ import (
 	userEntities "github.com/yigittopm/wl-auth/internal/users/entities"
 	usersRepository "github.com/yigittopm/wl-auth/internal/users/repository"
 	usersUsecase "github.com/yigittopm/wl-auth/internal/users/usecase"
+	"github.com/yigittopm/wl-auth/pkg/middleware"
 	"gorm.io/gorm"
 )
 
@@ -23,4 +24,5 @@ func Setup(router fiber.Router, db *gorm.DB) {
 
 	route.Post("/register", handler.Register)
 	route.Post("/login", handler.Login)
+	route.Get("/profile", middleware.AuthRequired(), handler.Profile)
 }
