@@ -16,6 +16,11 @@ Pull this repo and follow the steps below
   make up
 ```
 
+## Metrics
+> http://localhost:8080/metrics
+
+<img src="./assets/metrics.png">
+
 ## Swagger API Reference
 
 > http://localhost:8080/swagger/index.html
