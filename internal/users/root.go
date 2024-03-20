@@ -24,6 +24,6 @@ func Setup(router fiber.Router, db *gorm.DB) {
 
 	route.Post("/register", handler.Register)
 	route.Post("/login", handler.Login)
-	route.Get("/logout", handler.Logout)
+	route.Get("/logout", middleware.AuthRequired(), handler.Logout)
 	route.Get("/profile", middleware.AuthRequired(), handler.Profile)
 }

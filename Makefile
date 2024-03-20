@@ -14,6 +14,10 @@ build: clean
 run: build
 	./bin/${BINARY_FILE}
 
+# Same as run but with environment variables
+dev: build
+	POSTGRES_HOST=localhost POSTGRES_USER=postgres  POSTGRES_PASSWORD=password  POSTGRES_DB=godb  POSTGRES_PORT=5432  POSTGRES_SSLMODE=disable  ./bin/${BINARY_FILE}
+
 # The project starts and ends with this command
 # Removes running composes
 down:
