@@ -2,9 +2,11 @@ package repository
 
 import (
 	"context"
+	"errors"
 
 	"github.com/yigittopm/wl-auth/internal/users/dtos"
 	"github.com/yigittopm/wl-auth/internal/users/entities"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -23,6 +25,7 @@ func New(db *gorm.DB) Repository {
 }
 
 func (repo *repository) Register(ctx context.Context, user entities.User) (dtos.RegisterResponse, error) {
+	user.Password, _ = hashPassword(user.Password)
 	result := repo.db.Create(&user)
 
 	return dtos.RegisterResponse{
@@ -32,7 +35,11 @@ func (repo *repository) Register(ctx context.Context, user entities.User) (dtos.
 
 func (repo *repository) Login(ctx context.Context, payload dtos.LoginRequest) (uint, error) {
 	user := entities.User{}
-	result := repo.db.First(&user, "username = ? AND password = ?", payload.Username, payload.Password)
+	result := repo.db.Find(&user, "username = ?", payload.Username)
+	if ok := comparePassword(user.Password, payload.Password); !ok {
+		return 0, errors.New("username or password is incorrect")
+	}
+
 	return user.ID, result.Error
 }
 
@@ -40,4 +47,24 @@ func (repo *repository) Profile(ctx context.Context, payload dtos.ProfileRequest
 	var user entities.User
 	result := repo.db.Find(&user, "id = ?", payload.ID)
 	return user, result.Error
+}
+
+func (repo *repository) IsExist(ctx context.Context, email string) (bool, error) {
+	var user entities.User
+	result := repo.db.First(&user, "email = ?", email)
+	return result.RowsAffected > 0, result.Error
+}
+
+func hashPassword(password string) (string, error) {
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return "", err
+	}
+
+	return string(hashPassword), nil
+}
+
+func comparePassword(hashedPassword, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+	return err == nil
 }

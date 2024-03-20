@@ -19,7 +19,7 @@ func New(data dtos.RegisterRequest) User {
 	return User{
 		Username: data.Username,
 		Email:    data.Email,
-		Password: data.Password, // TODO: encrypt this field
+		Password: data.Password,
 		UserType: constant.USER_TYPE,
 		IsActive: true,
 	}
