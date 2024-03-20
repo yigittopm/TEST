@@ -6,8 +6,10 @@ import (
 	"github.com/yigittopm/wl-auth/pkg/database"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/swagger"
 	"github.com/yigittopm/wl-auth/internal/users"
 )
@@ -22,8 +24,15 @@ func NewApp() {
 	// New Fiber App
 	app := fiber.New()
 
+	// Cache Middleware
+	app.Use(cache.New())
+
 	// Cors Middleware
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "http://localhost:3000",
+		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET, POST, PUT, DELETE",
+	}))
 
 	// Swagger implementation
 	app.Get("/swagger/*", swagger.HandlerDefault)
@@ -32,6 +41,9 @@ func NewApp() {
 	app.Use(logger.New(logger.Config{
 		Format: "[${time}] ${ip}  ${status} ${latency} ${method} ${path}\n",
 	}))
+
+	// Metrics
+	app.Get("/metrics", monitor.New(monitor.Config{Title: "WeLedger Auth Monitor"}))
 
 	// Handler Version
 	version := app.Group("/api/v1") // V1
