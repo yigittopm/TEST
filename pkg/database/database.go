@@ -10,6 +10,16 @@ import (
 )
 
 func Start() (*gorm.DB, error) {
+	_, ok := os.LookupEnv("POSTGRES_HOST")
+	if !ok {
+		os.Setenv("POSTGRES_HOST", "localhost")
+		os.Setenv("POSTGRES_USER", "postgres")
+		os.Setenv("POSTGRES_PASSWORD", "password")
+		os.Setenv("POSTGRES_DB", "godb")
+		os.Setenv("POSTGRES_PORT", "5432")
+		os.Setenv("POSTGRES_SSLMODE", "disable")
+	}
+
 	source := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		os.Getenv("POSTGRES_HOST"),
