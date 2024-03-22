@@ -6,7 +6,6 @@ import (
 	"github.com/yigittopm/wl-auth/pkg/database"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
@@ -25,7 +24,7 @@ func NewApp() {
 	app := fiber.New()
 
 	// Cache Middleware
-	app.Use(cache.New())
+	//app.Use(cache.New())
 
 	// Cors Middleware
 	app.Use(cors.New(cors.Config{
