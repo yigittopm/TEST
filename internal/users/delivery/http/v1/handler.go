@@ -51,12 +51,12 @@ func (h *handler) Register(c *fiber.Ctx) error {
 		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Validate error: %v", err.Error()))
 	}
 
-	userID, err := h.uc.Register(ctx, payload)
+	userID, status, err := h.uc.Register(ctx, payload)
 	if err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Register error: %v", err.Error()))
+		return response.ErrorResponse(c, status, fmt.Sprintf("Register error: %v", err.Error()))
 	}
 
-	return response.SuccessResponse(c, http.StatusOK, userID)
+	return response.SuccessResponse(c, status, userID)
 }
 
 // Login godoc
@@ -83,9 +83,9 @@ func (h *handler) Login(c *fiber.Ctx) error {
 		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Validation error: %v", err.Error()))
 	}
 
-	user, err := h.uc.Login(ctx, payload)
+	user, status, err := h.uc.Login(ctx, payload)
 	if err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Login error: %v", err.Error()))
+		return response.ErrorResponse(c, status, fmt.Sprintf("Login error: %v", err.Error()))
 	}
 
 	c.Cookie(&fiber.Cookie{
@@ -94,7 +94,7 @@ func (h *handler) Login(c *fiber.Ctx) error {
 		Expires: time.Now().Add(time.Hour * 24),
 	})
 
-	return response.SuccessResponse(c, http.StatusOK, user)
+	return response.SuccessResponse(c, status, user)
 }
 
 // Logout godoc
@@ -136,10 +136,10 @@ func (h *handler) Profile(c *fiber.Ctx) error {
 
 	userId := c.Locals("userId").(uint)
 
-	user, err := h.uc.Profile(ctx, dtos.ProfileRequest{ID: userId})
+	user, status, err := h.uc.Profile(ctx, dtos.ProfileRequest{ID: userId})
 	if err != nil {
-		return response.ErrorResponse(c, http.StatusBadRequest, fmt.Sprintf("Profile error: %v", err.Error()))
+		return response.ErrorResponse(c, status, fmt.Sprintf("Profile error: %v", err.Error()))
 	}
 
-	return response.SuccessResponse(c, http.StatusOK, user)
+	return response.SuccessResponse(c, status, user)
 }

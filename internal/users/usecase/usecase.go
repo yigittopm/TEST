@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"github.com/yigittopm/wl-auth/internal/users/dtos"
@@ -11,9 +12,9 @@ import (
 )
 
 type Usecase interface {
-	Register(ctx context.Context, payload dtos.RegisterRequest) (dtos.RegisterResponse, error)
-	Login(ctx context.Context, payload dtos.LoginRequest) (dtos.LoginResponse, error)
-	Profile(ctx context.Context, payload dtos.ProfileRequest) (entities.User, error)
+	Register(ctx context.Context, payload dtos.RegisterRequest) (dtos.RegisterResponse, int, error)
+	Login(ctx context.Context, payload dtos.LoginRequest) (dtos.LoginResponse, int, error)
+	Profile(ctx context.Context, payload dtos.ProfileRequest) (entities.User, int, error)
 }
 
 type usecase struct {
@@ -26,36 +27,38 @@ func New(repo repository.Repository) Usecase {
 	}
 }
 
-func (uc *usecase) Register(ctx context.Context, payload dtos.RegisterRequest) (dtos.RegisterResponse, error) {
+func (uc *usecase) Register(ctx context.Context, payload dtos.RegisterRequest) (dtos.RegisterResponse, int, error) {
 	user := entities.New(payload)
+	response, err := uc.repo.Register(ctx, user)
+	if err != nil {
+		return dtos.RegisterResponse{}, http.StatusBadRequest, err
+	}
 
-	return uc.repo.Register(ctx, user)
+	return response, http.StatusOK, nil
 }
 
-func (uc *usecase) Login(ctx context.Context, payload dtos.LoginRequest) (dtos.LoginResponse, error) {
-	//TODO: Check IsExist user
-
+func (uc *usecase) Login(ctx context.Context, payload dtos.LoginRequest) (dtos.LoginResponse, int, error) {
 	userId, err := uc.repo.Login(ctx, payload)
 	if err != nil {
-		return dtos.LoginResponse{}, err
+		return dtos.LoginResponse{}, http.StatusBadRequest, err
 	}
 
 	accessToken, err := jwt.Sign(userId, time.Hour*8)
 	if err != nil {
-		return dtos.LoginResponse{}, err
+		return dtos.LoginResponse{}, http.StatusUnauthorized, err
 	}
 
 	return dtos.LoginResponse{
 		ID:          userId,
 		AccessToken: accessToken,
-	}, err
+	}, http.StatusOK, nil
 }
 
-func (uc *usecase) Profile(ctx context.Context, payload dtos.ProfileRequest) (entities.User, error) {
+func (uc *usecase) Profile(ctx context.Context, payload dtos.ProfileRequest) (entities.User, int, error) {
 	user, err := uc.repo.Profile(ctx, payload)
 	if err != nil {
-		return entities.User{}, err
+		return entities.User{}, http.StatusBadRequest, err
 	}
 
-	return user, nil
+	return user, http.StatusOK, nil
 }
