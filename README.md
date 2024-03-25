@@ -16,6 +16,15 @@ Pull this repo and follow the steps below
   make up
 ```
 
+For development, run the following commands
+```bash
+  # Run the database
+  make dev-up
+  
+  # Run the API
+  make dev-run
+```
+
 ## Metrics
 > http://localhost:8080/metrics
 
