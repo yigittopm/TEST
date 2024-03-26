@@ -7,9 +7,8 @@ type ProfileRequest struct {
 }
 
 type ProfileResponse struct {
-	ID       uint   `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
+	ID    uint   `json:"id"`
+	Email string `json:"email"`
 }
 
 func (req ProfileRequest) Validate() error {

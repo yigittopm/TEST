@@ -1,6 +1,5 @@
 package constant
 
 const (
-	USER_TYPE  = "user"
-	ADMIN_TYPE = "admin"
+	DEFAULT_ROLE = "DEFAULT"
 )

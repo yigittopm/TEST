@@ -10,6 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/gofiber/swagger"
+	"github.com/yigittopm/wl-auth/internal/authentication"
 	"github.com/yigittopm/wl-auth/internal/users"
 )
 
@@ -46,6 +47,9 @@ func NewApp() {
 
 	// Handler Version
 	version := app.Group("/api/v1") // V1
+
+	// Authentication
+	authentication.Setup(version, db)
 
 	// Users
 	users.Setup(version, db)

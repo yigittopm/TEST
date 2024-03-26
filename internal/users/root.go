@@ -11,8 +11,10 @@ import (
 )
 
 func Setup(router fiber.Router, db *gorm.DB) {
+
 	// Migration
 	db.AutoMigrate(&userEntities.User{})
+	db.AutoMigrate(&userEntities.UserDetail{})
 
 	// Dependency Injection
 	repo := usersRepository.New(db)

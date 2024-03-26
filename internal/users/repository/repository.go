@@ -35,7 +35,7 @@ func (repo *repository) Register(ctx context.Context, user entities.User) (dtos.
 
 func (repo *repository) Login(ctx context.Context, payload dtos.LoginRequest) (uint, error) {
 	user := entities.User{}
-	result := repo.db.Find(&user, "username = ?", payload.Username)
+	result := repo.db.Find(&user, "email = ?", payload.Email)
 	if ok := comparePassword(user.Password, payload.Password); !ok {
 		return 0, errors.New("username or password is incorrect")
 	}

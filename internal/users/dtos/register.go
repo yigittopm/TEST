@@ -1,9 +1,11 @@
 package dtos
 
-import "github.com/invopop/validation"
+import (
+	"github.com/invopop/validation"
+	"github.com/invopop/validation/is"
+)
 
 type RegisterRequest struct {
-	Username string `json:"username"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -14,8 +16,7 @@ type RegisterResponse struct {
 
 func (req RegisterRequest) Validate() error {
 	return validation.ValidateStruct(&req,
-		validation.Field(&req.Username, validation.Required, validation.Length(3, 255)),
-		validation.Field(&req.Email, validation.Required, validation.Length(8, 255)),
+		validation.Field(&req.Email, validation.Required, validation.Length(8, 255), is.Email),
 		validation.Field(&req.Password, validation.Required, validation.Length(8, 255)),
 	)
 }
