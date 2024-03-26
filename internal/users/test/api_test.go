@@ -1,13 +1,16 @@
 package usecase
 
 import (
+	"bytes"
 	"database/sql"
+	"encoding/json"
 	"net/http"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/gofiber/fiber/v2"
 	"github.com/yigittopm/wl-auth/internal/users"
+	"github.com/yigittopm/wl-auth/internal/users/dtos"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -52,21 +55,27 @@ func TestRegister(t *testing.T) {
 	}{
 		{
 			description:         "New user registration with valid data",
-			route:               "/api/v1/users/profile",
-			method:              "GET",
-			expectedCode:        404,
+			route:               "/users/register",
+			method:              "POST",
+			expectedCode:        200,
 			expectedContentType: "application/json",
 			expectedBody:        nil,
-			body:                nil,
+			body: dtos.RegisterRequest{
+				Email:    "yigittopm@hotmail.com",
+				Username: "yigittopm",
+				Password: "password",
+			},
 		},
 	}
 
 	for _, test := range tests {
+		jsonData, _ := json.Marshal(test.body)
 		req, _ := http.NewRequest(
 			test.method,
 			test.route,
-			nil,
+			bytes.NewBuffer(jsonData),
 		)
+		req.Header.Set("Content-Type", "application/json")
 
 		res, err := app.Test(req, -1)
 		if err != nil {
