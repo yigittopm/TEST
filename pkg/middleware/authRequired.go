@@ -9,19 +9,43 @@ import (
 	"github.com/yigittopm/wl-auth/pkg/utils/response"
 )
 
-func AuthRequired() fiber.Handler {
+func RoleRequired(role string) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		// Authorization header'dan token'ı al
 		jwtCookie := c.Cookies("jwt")
 		if jwtCookie == "" {
 			return response.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized")
 		}
 
-		// Token'ı "Bearer token" formatından ayıkla
 		//tokenString := jwtCookie[7:]
 		tokenString := jwtCookie
 
-		// Token'ı doğrula
+		userId, err := jwt.Verify(tokenString)
+		if err != nil {
+			return response.ErrorResponse(c, http.StatusUnauthorized, fmt.Sprintf("Unauthorized: %v", err.Error()))
+		}
+
+		roleCookie := c.Cookies("role")
+		if roleCookie == "" || roleCookie != role {
+			return response.ErrorResponse(c, http.StatusForbidden, "Access denied")
+		}
+
+		c.Locals("userId", userId)
+		c.Locals("role", role)
+
+		return c.Next()
+	}
+}
+
+func AuthRequired() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		jwtCookie := c.Cookies("jwt")
+		if jwtCookie == "" {
+			return response.ErrorResponse(c, http.StatusUnauthorized, "Unauthorized")
+		}
+
+		//tokenString := jwtCookie[7:]
+		tokenString := jwtCookie
+
 		userId, err := jwt.Verify(tokenString)
 		if err != nil {
 			return response.ErrorResponse(c, http.StatusUnauthorized, fmt.Sprintf("Unauthorized: %v", err.Error()))
@@ -29,7 +53,6 @@ func AuthRequired() fiber.Handler {
 
 		c.Locals("userId", userId)
 
-		// Token doğrulandı, bir sonraki handler'ı çağır
 		return c.Next()
 	}
 }
