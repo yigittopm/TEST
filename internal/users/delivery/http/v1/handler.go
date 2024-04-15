@@ -94,6 +94,12 @@ func (h *handler) Login(c *fiber.Ctx) error {
 		Expires: time.Now().Add(time.Hour * 24),
 	})
 
+	c.Cookie(&fiber.Cookie{
+		Name:    "role",
+		Value:   user.Roles[0].Name,
+		Expires: time.Now().Add(time.Hour * 24),
+	})
+
 	return response.SuccessResponse(c, status, user)
 }
 

@@ -40,7 +40,6 @@ func (repo *roleRepository) CreateRole(ctx context.Context, role role.Role) (dto
 		Name:       role.Name,
 		Privileges: role.Privileges,
 	}, result.Error
-
 }
 
 func (repo *roleRepository) UpdateRole(ctx context.Context, payload dtos.UpdateRoleRequest) (role.Role, error) {

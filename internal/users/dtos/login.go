@@ -3,6 +3,7 @@ package dtos
 import (
 	"github.com/invopop/validation"
 	"github.com/invopop/validation/is"
+	"github.com/yigittopm/wl-auth/internal/authentication/entities/role"
 )
 
 type LoginRequest struct {
@@ -11,8 +12,9 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	ID          uint   `json:"id"`
-	AccessToken string `json:"accessToken"`
+	ID          uint        `json:"id"`
+	Roles       []role.Role `json:"roles"`
+	AccessToken string      `json:"accessToken"`
 }
 
 func (req LoginRequest) Validate() error {

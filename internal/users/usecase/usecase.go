@@ -38,18 +38,19 @@ func (uc *usecase) Register(ctx context.Context, payload dtos.RegisterRequest) (
 }
 
 func (uc *usecase) Login(ctx context.Context, payload dtos.LoginRequest) (dtos.LoginResponse, int, error) {
-	userId, err := uc.repo.Login(ctx, payload)
+	user, err := uc.repo.Login(ctx, payload)
 	if err != nil {
 		return dtos.LoginResponse{}, http.StatusBadRequest, err
 	}
 
-	accessToken, err := jwt.Sign(userId, time.Hour*8)
+	accessToken, err := jwt.Sign(user.ID, time.Hour*8)
 	if err != nil {
 		return dtos.LoginResponse{}, http.StatusUnauthorized, err
 	}
 
 	return dtos.LoginResponse{
-		ID:          userId,
+		ID:          user.ID,
+		Roles:       user.Roles,
 		AccessToken: accessToken,
 	}, http.StatusOK, nil
 }

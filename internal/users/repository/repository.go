@@ -12,7 +12,7 @@ import (
 
 type Repository interface {
 	Register(context.Context, entities.User) (dtos.RegisterResponse, error)
-	Login(context.Context, dtos.LoginRequest) (uint, error)
+	Login(context.Context, dtos.LoginRequest) (entities.User, error)
 	Profile(context.Context, dtos.ProfileRequest) (entities.User, error)
 }
 
@@ -33,14 +33,19 @@ func (repo *repository) Register(ctx context.Context, user entities.User) (dtos.
 	}, result.Error
 }
 
-func (repo *repository) Login(ctx context.Context, payload dtos.LoginRequest) (uint, error) {
-	user := entities.User{}
-	result := repo.db.Find(&user, "email = ?", payload.Email)
+func (repo *repository) Login(ctx context.Context, payload dtos.LoginRequest) (entities.User, error) {
+	var user entities.User
+	result :=
+		repo.db.
+			Preload("Roles").
+			Preload("Roles.Privileges").
+			First(&user, "email = ?", payload.Email)
+
 	if ok := comparePassword(user.Password, payload.Password); !ok {
-		return 0, errors.New("username or password is incorrect")
+		return entities.User{}, errors.New("username or password is incorrect")
 	}
 
-	return user.ID, result.Error
+	return user, result.Error
 }
 
 func (repo *repository) Profile(ctx context.Context, payload dtos.ProfileRequest) (entities.User, error) {
