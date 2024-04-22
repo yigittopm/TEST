@@ -3,12 +3,13 @@ package v1
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	roleDto "github.com/yigittopm/wl-auth/internal/authentication/dtos/role"
 	"github.com/yigittopm/wl-auth/internal/authentication/usecase"
 	"github.com/yigittopm/wl-auth/pkg/utils/response"
-	"net/http"
-	"time"
 )
 
 type RoleHandler interface {
