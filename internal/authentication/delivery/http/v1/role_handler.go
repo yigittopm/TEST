@@ -53,9 +53,7 @@ func (h *roleHandler) CreateRole(c *fiber.Ctx) error {
 
 	role, status, err := h.uc.CreateRole(ctx, payload)
 	if err != nil {
-		if err != nil {
-			return response.ErrorResponse(c, status, fmt.Sprintf("Create Role error: %v", err.Error()))
-		}
+		return response.ErrorResponse(c, status, fmt.Sprintf("Create Role error: %v", err.Error()))
 	}
 
 	return response.SuccessResponse(c, status, role)

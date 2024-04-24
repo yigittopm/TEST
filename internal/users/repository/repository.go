@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 
+	"github.com/yigittopm/wl-auth/internal/authentication/entities/role"
 	"github.com/yigittopm/wl-auth/internal/users/dtos"
 	"github.com/yigittopm/wl-auth/internal/users/entities"
 	"golang.org/x/crypto/bcrypt"
@@ -26,6 +27,7 @@ func New(db *gorm.DB) Repository {
 
 func (repo *repository) Register(ctx context.Context, user entities.User) (dtos.RegisterResponse, error) {
 	user.Password, _ = hashPassword(user.Password)
+	user.Roles = append(user.Roles, findDefaultRole(repo.db))
 	result := repo.db.Create(&user)
 
 	return dtos.RegisterResponse{
@@ -50,7 +52,11 @@ func (repo *repository) Login(ctx context.Context, payload dtos.LoginRequest) (e
 
 func (repo *repository) Profile(ctx context.Context, payload dtos.ProfileRequest) (entities.User, error) {
 	var user entities.User
-	result := repo.db.Find(&user, "id = ?", payload.ID)
+	result := repo.db.
+		Preload("Detail").
+		Preload("Roles").
+		Preload("Roles.Privileges").
+		First(&user, "id = ?", payload.ID)
 	return user, result.Error
 }
 
@@ -72,4 +78,14 @@ func hashPassword(password string) (string, error) {
 func comparePassword(hashedPassword, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
+}
+
+func findDefaultRole(db *gorm.DB) role.Role {
+	var role role.Role
+	err := db.First(&role, "name = ?", "DEFAULT").Error
+	if err != nil {
+		return role
+	}
+
+	return role
 }

@@ -90,7 +90,7 @@ func (h *handler) Login(c *fiber.Ctx) error {
 
 	c.Cookie(&fiber.Cookie{
 		Name:    "jwt",
-		Value:   user.AccessToken,
+		Value:   "Bearer " + user.AccessToken,
 		Expires: time.Now().Add(time.Hour * 24),
 	})
 

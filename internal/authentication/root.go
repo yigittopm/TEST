@@ -7,6 +7,7 @@ import (
 	roleEntity "github.com/yigittopm/wl-auth/internal/authentication/entities/role"
 	"github.com/yigittopm/wl-auth/internal/authentication/repository"
 	"github.com/yigittopm/wl-auth/internal/authentication/usecase"
+	"github.com/yigittopm/wl-auth/pkg/constant"
 	"github.com/yigittopm/wl-auth/pkg/middleware"
 	"gorm.io/gorm"
 )
@@ -31,9 +32,9 @@ func Setup(router fiber.Router, db *gorm.DB) {
 	route := router.Group("/auth")
 
 	// Roles Routes
-	route.Post("/role", middleware.AuthRequired(), roleHandler.CreateRole)
+	route.Post("/role", middleware.AuthRequired(constant.ROOT_ROLE), roleHandler.CreateRole)
 
 	// Privilege Routes
-	route.Post("/privilege", middleware.AuthRequired(), privilegeHandler.CreatePrivilege)
+	route.Post("/privilege", middleware.AuthRequired(constant.ROOT_ROLE), privilegeHandler.CreatePrivilege)
 
 }
