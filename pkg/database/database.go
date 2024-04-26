@@ -4,20 +4,16 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func Start() (*gorm.DB, error) {
-	_, ok := os.LookupEnv("POSTGRES_HOST")
-	if !ok {
-		os.Setenv("POSTGRES_HOST", "localhost")
-		os.Setenv("POSTGRES_USER", "postgres")
-		os.Setenv("POSTGRES_PASSWORD", "password")
-		os.Setenv("POSTGRES_DB", "godb")
-		os.Setenv("POSTGRES_PORT", "5432")
-		os.Setenv("POSTGRES_SSLMODE", "disable")
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
 	}
 
 	source := fmt.Sprintf(
