@@ -2,13 +2,13 @@ package privilege
 
 import (
 	dtos "github.com/yigittopm/wl-auth/internal/authentication/dtos/privilege"
-	"gorm.io/gorm"
+	"github.com/yigittopm/wl-auth/pkg/model"
 )
 
 type Privilege struct {
-	gorm.Model
-	Description string `gorm:"unique;not null"`
-	Key         string `gorm:"unique;not null"`
+	model.Base
+	Description string `json:"description" gorm:"unique;not null"`
+	Key         string `json:"key" gorm:"unique;not null"`
 }
 
 func New(data dtos.CreatePrivilegeRequest) Privilege {

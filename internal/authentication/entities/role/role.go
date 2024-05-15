@@ -3,13 +3,13 @@ package role
 import (
 	dtos "github.com/yigittopm/wl-auth/internal/authentication/dtos/role"
 	"github.com/yigittopm/wl-auth/internal/authentication/entities/privilege"
-	"gorm.io/gorm"
+	"github.com/yigittopm/wl-auth/pkg/model"
 )
 
 type Role struct {
-	gorm.Model
-	Name       string                `gorm:"unique;not null"`
-	Privileges []privilege.Privilege `gorm:"many2many:role_privileges;"`
+	model.Base
+	Name       string                `json:"name" gorm:"unique;not null"`
+	Privileges []privilege.Privilege `json:"privileges" gorm:"many2many:role_privileges;"`
 }
 
 func New(data dtos.CreateRoleRequest) Role {

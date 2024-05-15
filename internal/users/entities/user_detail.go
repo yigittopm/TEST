@@ -1,14 +1,16 @@
 package entities
 
-import "gorm.io/gorm"
+import (
+	"github.com/yigittopm/wl-auth/pkg/model"
+)
 
 type UserDetail struct {
-	gorm.Model
-	UserID    uint `gorm:"primaryKey"`
-	Firstname string
-	Lastname  string
-	Phone     string
-	Country   string
-	City      string
-	Address   string
+	model.Base
+	UserID    uint   `json:"userID" gorm:"primaryKey"`
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Phone     string `json:"phone"`
+	Country   string `json:"country"`
+	City      string `json:"city"`
+	Address   string `json:"address"`
 }
