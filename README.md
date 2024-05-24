@@ -12,10 +12,6 @@ Pull this repo and follow the steps below
   cd wl-auth
 ```
 
-```bash
-  make up
-```
-
 For development, run the following commands
 ```bash
   # Run the database
@@ -23,6 +19,11 @@ For development, run the following commands
   
   # Run the API
   make dev-run
+```
+
+For production
+```bash
+  make up
 ```
 
 ## Metrics
